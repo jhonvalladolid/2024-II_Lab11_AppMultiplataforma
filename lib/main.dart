@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,119 +8,330 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Laboratorio 11',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomeScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: const Text('Laboratorio 11'),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MaterialExampleScreen(),
+                  ),
+                );
+              },
+              child: const Text('Ir a Ejemplo de Material'),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            const SizedBox(height: 20),
+            CupertinoButton(
+              color: CupertinoColors.activeBlue,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => const CupertinoExampleScreen(),
+                  ),
+                );
+              },
+              child: const Text('Ir a Ejemplo de Cupertino'),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class MaterialExampleScreen extends StatefulWidget {
+  const MaterialExampleScreen({super.key});
+
+  @override
+  State<MaterialExampleScreen> createState() => _MaterialExampleScreenState();
+}
+
+class _MaterialExampleScreenState extends State<MaterialExampleScreen> {
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+  bool switchValue = false;
+
+  Future<void> _selectDate() async {
+    DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (date != null) {
+      setState(() {
+        selectedDate = date;
+      });
+    }
+  }
+
+  Future<void> _selectTime() async {
+    TimeOfDay? time = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (time != null) {
+      setState(() {
+        selectedTime = time;
+      });
+    }
+  }
+
+  void _showAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Alerta'),
+          content: const Text('¿Quieres continuar con esta acción?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Laboratorio 11 - Ejemplo de Material'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: _selectDate,
+              child: Text(
+                selectedDate == null
+                    ? 'Seleccionar Fecha'
+                    : 'Fecha: ${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}',
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _selectTime,
+              child: Text(
+                selectedTime == null
+                    ? 'Seleccionar Hora'
+                    : 'Hora: ${selectedTime!.format(context)}',
+              ),
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Switch:'),
+                Switch(
+                  value: switchValue,
+                  onChanged: (bool value) {
+                    setState(() {
+                      switchValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _showAlertDialog,
+              child: const Text('Mostrar Alerta'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Regresar al Inicio'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CupertinoExampleScreen extends StatefulWidget {
+  const CupertinoExampleScreen({super.key});
+
+  @override
+  State<CupertinoExampleScreen> createState() =>
+      _CupertinoExampleScreenState();
+}
+
+class _CupertinoExampleScreenState extends State<CupertinoExampleScreen> {
+  DateTime date = DateTime.now();
+  Duration timer = const Duration();
+  bool switchValue = false;
+
+  void _showDatePicker() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 200,
+        padding: const EdgeInsets.only(top: 6.0),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: CupertinoDatePicker(
+            mode: CupertinoDatePickerMode.date,
+            initialDateTime: date,
+            onDateTimeChanged: (DateTime newDate) {
+              setState(() => date = newDate);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showTimerPicker() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => Container(
+        height: 200,
+        padding: const EdgeInsets.only(top: 6.0),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: CupertinoTimerPicker(
+            initialTimerDuration: timer,
+            onTimerDurationChanged: (Duration newTimer) {
+              setState(() => timer = newTimer);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showAlertDialog() {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: const Text('Alerta'),
+        content: const Text('¿Deseas continuar con esta acción?'),
+        actions: [
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            child: const Text('Cancelar'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: true,
+            child: const Text('Aceptar'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('Laboratorio 11 - Ejemplo de Cupertino'),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Fecha seleccionada: ${date.day}-${date.month}-${date.year}',
+              style: const TextStyle(fontSize: 18),
+            ),
+            CupertinoButton(
+              color: CupertinoColors.activeGreen,
+              child: const Text('Seleccionar Fecha'),
+              onPressed: _showDatePicker,
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Duración: ${timer.inHours}h ${timer.inMinutes % 60}m ${timer.inSeconds % 60}s',
+              style: const TextStyle(fontSize: 18),
+            ),
+            CupertinoButton(
+              color: CupertinoColors.activeOrange,
+              child: const Text('Seleccionar Temporizador'),
+              onPressed: _showTimerPicker,
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Switch:'),
+                CupertinoSwitch(
+                  value: switchValue,
+                  activeColor: CupertinoColors.activeBlue,
+                  onChanged: (bool value) {
+                    setState(() {
+                      switchValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            CupertinoButton(
+              color: CupertinoColors.systemRed,
+              child: const Text('Mostrar Alerta'),
+              onPressed: _showAlertDialog,
+            ),
+            const SizedBox(height: 20),
+            CupertinoButton(
+              color: CupertinoColors.activeBlue,
+              child: const Text('Regresar al Inicio'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
