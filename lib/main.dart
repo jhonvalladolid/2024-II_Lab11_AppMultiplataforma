@@ -244,13 +244,25 @@ class _CupertinoExampleScreenState extends State<CupertinoExampleScreen> {
     );
   }
 
-  void _showAlertDialog() {
+  void _showImagePickerDialog() {
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Alerta'),
-        content: const Text('¿Deseas continuar con esta acción?'),
+        title: const Text('Agregar Imagen'),
+        content: const Text('Selecciona una opción:'),
         actions: [
+          CupertinoDialogAction(
+            child: const Text('Abrir Cámara'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoDialogAction(
+            child: const Text('Seleccionar de Galería'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           CupertinoDialogAction(
             isDefaultAction: true,
             child: const Text('Cancelar'),
@@ -300,13 +312,19 @@ class _CupertinoExampleScreenState extends State<CupertinoExampleScreen> {
               onPressed: _showTimerPicker,
             ),
             const SizedBox(height: 20),
+            CupertinoButton(
+              color: CupertinoColors.activeBlue,
+              child: const Text('Agregar Imagen'),
+              onPressed: _showImagePickerDialog,
+            ),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text('Switch:'),
                 CupertinoSwitch(
                   value: switchValue,
-                  activeColor: CupertinoColors.activeBlue,
+                  activeColor: const Color(0xFF34C759),
                   onChanged: (bool value) {
                     setState(() {
                       switchValue = value;
@@ -319,7 +337,31 @@ class _CupertinoExampleScreenState extends State<CupertinoExampleScreen> {
             CupertinoButton(
               color: CupertinoColors.systemRed,
               child: const Text('Mostrar Alerta'),
-              onPressed: _showAlertDialog,
+              onPressed: () {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (BuildContext context) => CupertinoAlertDialog(
+                    title: const Text('Alerta'),
+                    content: const Text('¿Deseas continuar con esta acción?'),
+                    actions: [
+                      CupertinoDialogAction(
+                        isDefaultAction: true,
+                        child: const Text('Cancelar'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      CupertinoDialogAction(
+                        isDestructiveAction: true,
+                        child: const Text('Aceptar'),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 20),
             CupertinoButton(
